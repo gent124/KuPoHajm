@@ -33,7 +33,7 @@ var mysqlConnection = mysql.createConnection({
 
 mysqlConnection.connect((err) => {
     if(!err){
-        console.log('DB connection succeded');
+        console.log('DB connection succeded!!');
 
     }else{
         console.log('DB connection failed \n Error:  ' + JSON.stringify(err,undefined,2));
@@ -94,7 +94,29 @@ app.post('/foods',(req,res)=> {
     CAll FoodsAddOrEdit(@foodID,@placeName,@FoodName,@foodRating);";
     mysqlConnection.query(sql,[emp.foodID, emp.placeName, emp.foodName, emp.foodRating], (err,rows,fields)=>{
         if(!err){
-            res.send(rows);
+            rows.forEach(elemmnt => {
+                if(elemmnt.constructor == Array)
+                res.send('Inserted food id  : ' +elemmnt[0].foodID);
+
+
+
+            });
+
+        }else{
+            console.log(err);
+        }
+    });
+});
+
+
+//Update a food
+app.put('/foods',(req,res)=> {
+    let emp = req.body;
+    var sql = "SET @foodID = ?; SET @placeName = ?; SET @foodName = ?; SET @foodRating = ?; \
+    CAll FoodsAddOrEdit(@foodID,@placeName,@FoodName,@foodRating);";
+    mysqlConnection.query(sql,[emp.foodID, emp.placeName, emp.foodName, emp.foodRating], (err,rows,fields)=>{
+        if(!err){
+            res.send('Updated succesfully');
 
         }else{
             console.log(err);
